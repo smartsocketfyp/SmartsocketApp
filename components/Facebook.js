@@ -8,7 +8,7 @@ import FacebookLogin from 'react-facebook-login';
 export default class Facebook extends React.Component {
   state = {
     isLoggedIn: false,
-    userID: "",
+    userID: "aaaaa",
     name: "",
     email: "",
     picture: ""
