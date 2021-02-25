@@ -1,10 +1,10 @@
 {
-  "webpackServerPort": 19006,
-  "devToolsPort": 19003,
-  "expoServerPort": 19001,
+  "devToolsPort": 19002,
+  "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "packagerPid": 3688,
+  "webpackServerPort": 19006,
+  "expoServerNgrokUrl": "https://6r-rb2.anonymous.code-18122020-combined.exp.direct",
+  "packagerNgrokUrl": "https://packager.6r-rb2.anonymous.code-18122020-combined.exp.direct",
+  "ngrokPid": 1352
 }

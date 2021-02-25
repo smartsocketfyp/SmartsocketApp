@@ -1,11 +1,7 @@
-import React, {Component} from "react";
-// import FacebookLogin from "react-facebook-login";
-import FacebookLogin from 'react-facebook-login';
+import React, { Component } from "react";
+import FacebookLogin from "react-facebook-login";
 
-// import FacebookLogin from '@types/react-facebook-login';
-
-
-export default class Facebook extends React.Component {
+export default class Facebook extends Component {
   state = {
     isLoggedIn: false,
     userID: "",
@@ -57,6 +53,7 @@ export default class Facebook extends React.Component {
         />
       );
     }
+
     return <div>{fbContent}</div>;
   }
 }

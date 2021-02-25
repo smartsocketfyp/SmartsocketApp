@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BarChart, Image, View, Text, FlatList, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
 import firebase from 'firebase/app';
 import "firebase/auth";
 import 'firebase/database';
@@ -33,13 +33,8 @@ export default class PastUsageScreen extends React.Component {
 		return(
             <ScrollView>
                 <View style={styles.container}>
-               
-                {/* <Image
-                        style = {styles.Past_Usage_Image}
-                        source = {require('../assets/Past_Usage_Image.png')}
-                    /> */}
-
                     <Text style = {styles.Instructions}> Records of Past Usage </Text>                
+
                     <FlatList style={styles.FlatList}
                         data={this.state.list}
                         keyExtractor={(item)=>item.key}
@@ -56,10 +51,11 @@ export default class PastUsageScreen extends React.Component {
                                         <Text style = {styles.History_Text_Parameters}>{item.Power_Consumed}{'\n'}</Text>
                                     </Text>
                                 </View>)
-                        }}/>            
+                        }}/>
+                        
+                    
                 </View>
             </ScrollView>
-
 		)
 	}
 }
@@ -75,13 +71,6 @@ export default class PastUsageScreen extends React.Component {
         justifyContent: 'center',
         backgroundColor: '#fff',
     },
-
-    // Past_Usage_Image: {
-    //     width: 1080,
-    //     height: 608,
-    //     marginTop: 50,
-    //     marginBottom: 50,
-    // },
 
     Instructions: {
       textAlign: 'center',
@@ -128,4 +117,5 @@ export default class PastUsageScreen extends React.Component {
         marginLeft: 25,
         marginRight: 25,
     }
+
 });
