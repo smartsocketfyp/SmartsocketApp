@@ -4,30 +4,41 @@ import { View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import firebase from 'firebase/app';
 import "firebase/auth";
 import 'firebase/database';
+import {useNetInfo} from "@react-native-community/netinfo";
 
 function OnOffScreen( {route, navigation} ) {
     let data = route.params;
+    const netInfo = useNetInfo();
     const [Status, setStatus] = React.useState('');
+    const [RST, setRST] = React.useState('');
     //const [currenttime, setcurrenttime] = React.useState('');
 
     useEffect(() => {
+        setImmediate(() => readData({data}));
+        clearImmediate();
         setInterval(() => readData({data}), 1000);
     });
 
     const readData = ({data}) => {
-        firebase.database().ref('/Socket ID/' + data.slice(17,20)).once('value').then((snapshot) => {
-        setStatus(snapshot.val() && snapshot.val().SocketOn) ;
-        })
+        var ref = firebase.database().ref('/Socket ID/' + data.slice(17,20)).child("AppSwitch");
+        ref.on("value", function(snapshot){
+            setStatus(snapshot.val()) ;
+        });
+
+        var ref = firebase.database().ref('/Socket ID/' + data.slice(17,20)).child("Reset");
+        ref.on("value", function(snapshot){
+            setRST(snapshot.val()) ;
+        });
     };
 
     const handleSwitch = ({Status}) => {
         var user = firebase.auth().currentUser;
         
-        if(Status === false){
+        if(Status === 0){
             firebase.database().ref('/Socket ID/' + data.slice(17,20)).update({
-                SocketOn: true,
+                AppSwitch: 1,
                 Completion_Time: 0,
-                User_Email: user.email
+                Current_User_Email: user.email
             }).then((data) => {
                 console.log('data', data)
             }).catch((error) => {
@@ -35,11 +46,11 @@ function OnOffScreen( {route, navigation} ) {
             })
         }
 
-        else if(Status === true){
+        else if(Status === 1){
             firebase.database().ref('/Socket ID/' + data.slice(17,20)).update({
-                SocketOn: false,
+                AppSwitch: 0,
                 Completion_Time: 0,
-                User_Email: user.email
+                Current_User_Email: user.email
             }).then((data) => {
                 console.log('data', data)
             }).catch((error) => {
@@ -54,38 +65,76 @@ function OnOffScreen( {route, navigation} ) {
 
     
     return (        
-        
-        <View style={styles.container}>
-            <Text style = {styles.Instructions}> Socket No. {data.slice(17,20)} {'is currently \n'}  
-                 {(Status) ? 'switched on' : (Status === false) ? 'switched off' : '___'}
-            </Text>            
-
-            <TouchableOpacity
-                    style = {
-                        (Status)?
-                        styles.Off_Button: (Status === false) ? styles.On_Button : styles.neutralButton}
-                    onPress={() => handleSwitch({Status})}
-                >
-                <Text style = {styles.Button_Text}> 
-                    {(Status) ? 'Switch off Socket' : (Status === false) ? 'Switch on Socket' : 'Please wait a while'} 
+        <View>
+            <View style={(netInfo.isConnected) ? styles.Connection_Connected: styles.Connection_Disconnected}>
+            <Text style = {(netInfo.isConnected) ? styles.Connection_Text: styles.Disconnection_Text}> 
+                        {(netInfo.isConnected === true)? 'You are connected to the device' : 'You are disconnected from the device'} 
                 </Text>
-            </TouchableOpacity>
+            </View>
+            <View style={styles.container}>
+                <Text style = {styles.Instructions}> Socket No. {data.slice(17,20)} {'is currently \n'}  
+                    {(Status) ? 'switched on' : (Status === 0) ? 'switched off' : '___'}
+                </Text>            
 
-            <TouchableOpacity
-                    style={styles.Navigation_Button}
-                    onPress={() => navigation.navigate("Main Function")}
-                >
-                <Text style = {styles.Button_Text}> Return to functions page </Text>
-            </TouchableOpacity>  
-        
+                <TouchableOpacity
+                        style = {
+                            ((netInfo.isConnected === false) || (RST === 1)) ? styles.neutralButton :
+                            (Status)?
+                            styles.Off_Button: (Status === 0) ? styles.On_Button : styles.neutralButton}
+                        disabled = {((netInfo.isConnected === false) || (RST === 1))}
+                        onPress={() => handleSwitch({Status})}
+                    >
+                    <Text style = {styles.Button_Text}> 
+                        {((Status) && (RST === 0)) ? 'Switch off Socket' : ((Status === 0) && (RST === 0)) ? 'Switch on Socket' : 'Please wait a while'} 
+                    </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                        style={styles.Navigation_Button}
+                        onPress={() => navigation.navigate("Main Function")}
+                    >
+                    <Text style = {styles.Button_Text}> Return to functions page </Text>
+                </TouchableOpacity>  
+            
+            </View>
         </View>
       
     );
   }
 
 const styles = StyleSheet.create({
+    Connection_Connected: {
+        height: 30,
+        width : '100%',
+        alignItems: 'center',
+        backgroundColor: '#00F000',
+    },
+
+    Connection_Disconnected: {
+        height: 30,
+        width : '100%',
+        alignItems: 'center',
+        backgroundColor: '#F00000',
+        
+    },
+
+    Connection_Text: {
+        textAlign: 'center',
+        color: "#000000", 
+        fontWeight: "300", 
+        marginTop: 5,
+        fontSize: 15
+    },
+
+    Disconnection_Text: {
+        textAlign: 'center',
+        color: "#FFFFFF", 
+        fontWeight: "300", 
+        marginTop: 5,
+        fontSize: 15
+    },
+    
     container: {
-        flex : 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#fff',
@@ -95,7 +144,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginLeft: 25,
         marginRight: 25,
-        marginTop: 200,
+        marginTop: 100,
         marginBottom: 25,
         color: "#000", 
         fontWeight: "300", 
@@ -125,7 +174,7 @@ const styles = StyleSheet.create({
     },
 
     neutralButton: {
-        backgroundColor : '#111111',
+        backgroundColor : '#AAAAAA',
         borderRadius : 4,
         height: 52,
         width : 300,

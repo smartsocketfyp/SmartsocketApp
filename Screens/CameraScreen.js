@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import firebase from 'firebase/app';
+import "firebase/auth";
+import 'firebase/database';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 function CameraScreen( {navigation} ) {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
+    const [Status, setStatus] = React.useState('');
 
     useEffect(() => {
         (async () => {
@@ -14,22 +18,38 @@ function CameraScreen( {navigation} ) {
       }, []);
 
     const handleBarCodeScanned = ({data}) => {
-        setScanned(true);        
+        setScanned(true);   
 
-        if((data.slice(0,16) == 'Aily065105108121')){
-            navigation.push("Connected", data);
-        }
-
-        else {
-            navigation.navigate("Not Connected")
-        }
+        firebase.database().ref('/Socket ID/' + data.slice(17,20)).once('value').then(function(snapshot) {
+            var In_Use = snapshot.child("In_Use").val() ;
+            if(In_Use === 1){
+                alert("Socket in used, please try another socket")
+            }
+            else{
+                if((data.slice(0,16) == 'Aily065105108121')){
+                    navigation.push("Connected", data);
+                }
+        
+                else {
+                    navigation.navigate("Not Connected")
+                }
+            }
+        })
     };
 
         if (hasPermission === null) {
-            return <Text>Requesting for camera permission</Text>;
+            return(
+                <View style={styles.container}>
+                    <Text style = {styles.PermissionFail}> Requesting for permission to use the camera </Text>
+                </View>
+            );
         }
         if (hasPermission === false) {
-            return <Text>No access to camera</Text>;
+            return(
+                <View style={styles.container}>
+                    <Text style = {styles.PermissionFail}> Ouch! Access to the phone's camera is denied. Please modify your phone settings and try again </Text>
+                </View>
+            );
         }
     
     return (
@@ -45,7 +65,7 @@ function CameraScreen( {navigation} ) {
                 style={styles.Scan_Again_Button}
                 onPress={() => setScanned(false)}
             >
-                <Text style = {styles.Button_Text}> Press to scan again </Text>
+                <Text style = {styles.Button_Text}> Please wait... {'\n'} Press here to scan again if you fail to connect</Text>
             </TouchableOpacity>
         }
 
@@ -66,11 +86,19 @@ const styles = StyleSheet.create({
 
     Instructions: {
         textAlign: 'center',
-        
         color: "#fff", 
         fontWeight: "300", 
         fontSize: 25,
         backgroundColor: '#000000'
+    },
+
+    PermissionFail: {
+        marginLeft: 50,
+        marginRight: 50,
+        textAlign: 'center',
+        color: "#000", 
+        fontWeight: "300", 
+        fontSize: 15,
     },
 
     camerasize:{
@@ -82,16 +110,22 @@ const styles = StyleSheet.create({
         backgroundColor : '#005000',
         borderRadius : 4,
         height: 50,
-        width : 400,
+        width : '100%',
         marginTop: 175,
         marginBottom: 175,
+        alignContent: 'center',
+        
+        textAlign: 'center',
         alignItems: 'center',
         justifyContent: 'center'
     },
 
     Button_Text: {
         color: "#FFF",
-        fontWeight: "600"
+        fontWeight: "600",
+        textAlign: 'center',
+        alignItems: 'center',
+
     }
 });
 

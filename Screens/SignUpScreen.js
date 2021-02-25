@@ -21,9 +21,16 @@ function SignUpScreen({ navigation }) {
         .catch(function(error) {
             // Handle Errors here.
             var errorMessage = error.message;
-            
-            alert(errorMessage);
-            console.log(error);
+            var errorCode = error.code;
+
+            if (errorCode == 'auth/email-already-in-use'){
+                navigation.push("Email Verification", emailPhonenumber);
+            }
+
+            else{
+                alert(errorMessage);
+                console.log(error);
+            }            
         });
     };
 
@@ -65,7 +72,7 @@ function SignUpScreen({ navigation }) {
 
                 <TextInput
                     style={styles.Email_Phone}
-                    placeholder="Email or Phone Number"
+                    placeholder="Email*"
                     value={emailPhonenumber}
                     onChangeText={setemailPhonenumber}
                 />

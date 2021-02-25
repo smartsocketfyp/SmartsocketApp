@@ -1,22 +1,48 @@
 import * as React from 'react';
 import {useEffect} from "react";
-import { Image, View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet} from 'react-native';
+import firebase from 'firebase/app';
+import "firebase/auth";
+import 'firebase/database';
 
 function ConnectedScreen( {route, navigation} ) {
     let data = route.params;
+
+    const handleSignIn = () => {
+      var now = new Date();
+      var user = firebase.auth().currentUser;
+      var date = (now.getMonth() + 1) + "-" + now.getDate() + "," + now.getHours() + ":" + now.getMinutes();       
+
+      firebase.database().ref('/Socket ID/' + data.slice(17,20)).update({
+          AppSwitch: 0,
+          Current_User_Email: user.email,
+          In_Use: 1
+      }).then((data) => {
+          console.log('data', data)
+      }).catch((error) => {
+          console.log('error', error)
+      })
+
+      firebase.database().ref('/Socket ID/' + data.slice(17,20) + '/User_Activity/').push({
+        Time_of_Sign_In: now + " ",
+        User_Email: user.email,
+      }).then((data) => {
+          console.log('data', data)
+      }).catch((error) => {
+          console.log('error', error)
+      })
+    };
+
     useEffect(() => {
-      setTimeout(() => navigation.push('Main Function', data), 1500);
+      setTimeout(() => handleSignIn() > navigation.push('Main Function', data), 1500);
     });
     
     return (
       <View style={styles.container}>
-         {/* <Image
-            style = {styles.Connected_Image}
-            source = {require('../assets/Connected_Image.PNG')}/> */}
-         
           <Text style = {styles.Connected}>YAY! You are connected</Text>
       </View>
-      );
+      
+    );
   }
 
   const styles = StyleSheet.create({
@@ -26,14 +52,7 @@ function ConnectedScreen( {route, navigation} ) {
       justifyContent: 'center',
       backgroundColor: '#fff',
     },
-
-    // Connected_Image: {
-    //   // original dimension: 1080 x 1920
-    //   width: 270,
-    //   height: 405,
-    //   marginTop: 50,
-    //   marginBottom: 50,
-  // },
+    
     Connected: {
       textAlign: 'center',
       backgroundColor : '#00FF00',

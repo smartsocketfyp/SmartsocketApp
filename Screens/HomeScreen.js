@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Image, View, Text, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
 
-
 export default class HomeScreen extends React.Component {
 	render(){
 		return(
@@ -9,7 +8,8 @@ export default class HomeScreen extends React.Component {
                 <View style={styles.container}>
                     <Image
                         style = {styles.Aily_Logo}
-                        source = {require('../assets/10.png')} />
+                        source = {require('../assets/10.png')}
+                    />
 
                     <TouchableOpacity
                         style={styles.Log_In_Button}
@@ -21,11 +21,10 @@ export default class HomeScreen extends React.Component {
                     <TouchableOpacity
                         style={styles.Sign_Up_Button}
                         onPress={() => this.props.navigation.navigate("Sign Up")}
-                        // onPress={() => this.props.navigation.navigate("Power Usage Bar")}
                     >
                         <Text style = {styles.Button_Text}> Sign Up </Text>
                     </TouchableOpacity>
-
+                
                 </View>  
             </ScrollView>
 		)
@@ -57,7 +56,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-
     Sign_Up_Button: {
         backgroundColor : '#000080',
         borderRadius : 4,
@@ -68,7 +66,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    
     Button_Text: {
         color: "#FFF",
         fontWeight: "600"

@@ -7,19 +7,19 @@ function LoginScreen({ navigation }) {
     const [username, setusername] = React.useState('');
     const [password, setpassword] = React.useState('');
 
-    // const handleFBLogin = () => {
-    //     // Sign in using a popup.
-    //     var provider = new firebase.auth.FacebookAuthProvider();
-    //     provider.addScope('user_birthday');
-    //     firebase.auth().signInWithPopup(provider).then(function(result) {
-    //     // This gives you a Facebook Access Token.
-    //     var token = result.credential.accessToken;
-    //     // The signed-in user info.
-    //     var user = result.user;
+    const handleFBLogin = () => {
+        // Sign in using a popup.
+        var provider = new firebase.auth.FacebookAuthProvider();
+        provider.addScope('user_birthday');
+        firebase.auth().signInWithPopup(provider).then(function(result) {
+        // This gives you a Facebook Access Token.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
 
-    //     navigation.navigate("Scan Now");
-    //     });
-    // }
+        navigation.navigate("Scan Now");
+        });
+    }
 
     const handleGoogleLogin = () => {
         //Using popup
@@ -34,8 +34,6 @@ function LoginScreen({ navigation }) {
 
         navigation.navigate("Scan Now");
         });
-
-        // check emulator for this
     }
 
     const handleLogin = () => {
@@ -69,7 +67,7 @@ function LoginScreen({ navigation }) {
                 <Text style = {styles.Instructions}> Login to your account</Text>
                 <TextInput
                     style={styles.Key_In_Username}
-                    placeholder="Email or Phone Number"
+                    placeholder="Email"
                     value={username}
                     onChangeText={setusername}
                 />
@@ -115,21 +113,12 @@ function LoginScreen({ navigation }) {
                 </TouchableOpacity> 
 
                 <TouchableOpacity
-                        style={styles.Facebook_Button}
-                        //onPress={() => this.props.navigation.navigate("Facebook Screen")}
-                        onPress={() =>  navigation.navigate("Facebook Screen")}
-                    >
-                        <Text style = {styles.Button_Text_Facebook}> Facebook Login </Text>
-                    </TouchableOpacity>
-
-                {/* <TouchableOpacity
                     style = {styles.FB_Button}
                     
                     onPress={() => handleFBLogin() }
                 >
                     <Text style = {styles.Button_Text}> Log In with Facebook</Text>
-                </TouchableOpacity>  */}
-
+                </TouchableOpacity> 
 
                 <TouchableOpacity
                     style = {styles.Google_Button}
@@ -206,7 +195,7 @@ function LoginScreen({ navigation }) {
         justifyContent: 'center'
     },
 
-    Facebook_Button: {
+    FB_Button: {
         backgroundColor : '#000080',
         borderRadius : 4,
         height: 52,
@@ -228,7 +217,7 @@ function LoginScreen({ navigation }) {
         justifyContent: 'center'
     },
 
-    Button_Text_Facebook: {
+    Button_Text: {
         color: "#FFF",
         fontWeight: "600"
     },

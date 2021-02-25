@@ -21,10 +21,10 @@ function ForgetPasswordScreen({ navigation }) {
     return (
         <ScrollView>
         <View style={styles.container}>
-            <Text style = {styles.Instructions}> Key in your email or phone number</Text>
+            <Text style = {styles.Instructions}> Key in your email</Text>
             
             <TextInput
-                placeholder = "Email or phone number"
+                placeholder = "Email"
                 style={styles.Key_In_email}
                 value={emailphone}
                 onChangeText={setemailphone}                    
@@ -54,7 +54,7 @@ function ForgetPasswordScreen({ navigation }) {
         marginTop: 50,
         marginBottom: 25,
         color: "#000", 
-        fontWeight: "bold", 
+        fontWeight: "300", 
         fontSize: 25
     },
 

@@ -1,30 +1,30 @@
 import * as React from 'react';
-import { Image, View, Text, StyleSheet,  ScrollView, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import firebase from 'firebase/app';
 import "firebase/auth";
 
 export default class ScanNowScreen extends React.Component {
+    handleSignOut = () => {
+        firebase.auth().signOut()
+    };
+
     handleUserVerified = () => {
         var user = firebase.auth().currentUser;
         var UserVerified = user.emailVerified;
 
         if(UserVerified){
-             this.props.navigation.navigate("Camera")
-            // this.props.navigation.navigate("Main Function")
-        }     
+            this.props.navigation.navigate("Camera")
+        }
+        
         else{
             alert("Email not verified, please try again")
         }
     };
     
     render(){
+
 		return(
-            <ScrollView>
             <View style={styles.container}>
-                {/* <Image
-                        style = {styles.Scan_Now}
-                        source = {require('../assets/Scan_Now_Image.PNG')}
-                    /> */}
                 <Text style = {styles.Instructions}>Scan the QR Code of the Smart Socket</Text>
 
                 <TouchableOpacity
@@ -33,8 +33,22 @@ export default class ScanNowScreen extends React.Component {
                     >
                         <Text style = {styles.Button_Text}> Proceed to scan </Text>
                 </TouchableOpacity>
-           </View>
-           </ScrollView>
+
+                <TouchableOpacity
+                        style={styles.Scan_Now_Button}
+                        onPress={() => this.props.navigation.navigate("Past Usage")}
+                    >
+                        <Text style = {styles.Button_Text}> Past Usage of Aily </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.Log_Out_Button}
+                    onPress={() => this.handleSignOut() > this.props.navigation.navigate("Home")}
+                >
+                    <Text style = {styles.Button_Text}> Log Out </Text>
+                </TouchableOpacity>
+
+            </View>
 		)
 	}
 }
@@ -46,14 +60,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#fff',
     },
-
-    // Scan_Now_Image: {
-    //     // 1080 x 1350
-    //     width: 540,
-    //     height: 675,
-    //     marginTop: 50,
-    //     marginBottom: 50,
-    // },
 
     Instructions: {
         textAlign: 'center',
@@ -77,8 +83,23 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
 
+    Log_Out_Button: {
+        backgroundColor : '#800000',
+        borderRadius : 4,
+        height: 52,
+        width : 300,
+        marginTop: 25,
+        marginBottom: 25,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+
     Button_Text: {
         color: "#FFF",
         fontWeight: "600"
     },
+
+    
+
+    
 });
